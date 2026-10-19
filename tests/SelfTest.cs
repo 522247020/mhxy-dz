@@ -110,6 +110,39 @@ internal static class SelfTest
 
         File.Delete(path);
 
+        // 示例配置（meditation.example.ini）要能直接解析，并且和文档里写的默认值一致
+        string example = null;
+        string[] candidates = new string[]
+        {
+            Path.Combine(Directory.GetCurrentDirectory(), "meditation.example.ini"),
+            Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()) ?? ".", "meditation.example.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "meditation.example.ini"),
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "meditation.example.ini"),
+        };
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            if (File.Exists(candidates[i]))
+            {
+                example = candidates[i];
+                break;
+            }
+        }
+        Check("example ini found", example != null);
+        if (example != null)
+        {
+            OverlaySettings fromExample = OverlaySettings.Load(example);
+            Check("example opacity", Math.Abs(fromExample.Opacity - 0.85f) < 0.001f);
+            Check("example font auto", fromExample.FontPx == 0);
+            Check("example text white", OverlaySettings.ToHex(fromExample.TextColor) == "#ffffff");
+            Check("example outline auto", fromExample.Outline == OverlaySettings.OutlineAuto);
+            Check("example format seconds", fromExample.TimeFormat == OverlaySettings.TimeSeconds);
+            Check("example duration 180", fromExample.DurationSeconds == 180);
+            Check("example hotkey F9", fromExample.Hotkey == "F9");
+            Check("example on top", fromExample.OnTop);
+            Check("example unlocked", !fromExample.Locked);
+            Check("example size", fromExample.Width == 176 && fromExample.Height == 54);
+        }
+
         Console.WriteLine(_failures == 0 ? "ALL PASS" : (_failures + " FAILURES"));
         Environment.ExitCode = _failures == 0 ? 0 : 1;
     }
