@@ -1,0 +1,11 @@
+# 编译中间产物
+build/
+
+# 运行期配置（各人不同，示例文件保留）
+*.ini
+!meditation.example.ini
+
+# 杂项
+*.user
+*.spec
+Thumbs.db
