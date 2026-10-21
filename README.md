@@ -1,16 +1,25 @@
 # 打坐倒计时小窗
 
-梦幻西游打坐倒计时悬浮窗。窗口里只有一串数字，没有边框、没有进度条、没有提示音；
-无边框、逐像素透明、可置顶、可锁定成一张鼠标穿透的贴纸。
+梦幻西游打坐倒计时悬浮窗 —— 屏幕上只留一串数字，没有边框、没有进度条、没有提示音。
+
+[![Platform](https://img.shields.io/badge/platform-Windows%207%20%7C%208.1%20%7C%2010%20%7C%2011-0078D4)](#系统要求)
+[![.NET Framework](https://img.shields.io/badge/.NET%20Framework-4.x-512BD4)](#系统要求)
+[![Size](https://img.shields.io/badge/exe-45%20KB-brightgreen)](#实现要点)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Release](https://img.shields.io/badge/release-v1.0.0-2ea44f)](../../releases/latest)
+
+无边框、逐像素透明、可置顶、可锁定成一张鼠标穿透的贴纸；只有 Windows 版。
 
 - **单个 exe，约 45 KB**，双击就能用，不需要安装、不写注册表
 - 运行时只依赖系统自带的 **.NET Framework 4.x**；编译只依赖 Windows 自带的 `csc.exe`
 - 支持 Windows 7 SP1 / 10 / 11，32 位和 64 位都可以
+- **干净**：不联网、不起服务，唯一落盘的文件是 exe 旁边的 `meditation.ini`
 
 ![空闲状态](assets/preview-idle.png)
 
 ## 目录
 
+- [下载](#下载)
 - [功能特性](#功能特性)
 - [快速开始](#快速开始)
 - [操作一览](#操作一览)
@@ -24,8 +33,22 @@
 - [目录结构](#目录结构)
 - [常见问题](#常见问题)
 - [更新日志](#更新日志)
+- [反馈与贡献](#反馈与贡献)
+- [许可](#许可)
 
 > 面向使用者的完整手册（每一项菜单的作用、常见问题、复位方法）在 **[docs/使用说明.md](docs/使用说明.md)**。
+
+## 下载
+
+| 方式 | 适合 | 位置 |
+|---|---|---|
+| 直接下 exe | 只想拿来用 | [`dist/MeditationTimer.exe`](dist/MeditationTimer.exe)，约 45 KB |
+| 下发布包 | 想留版本存档 | [Releases](../../releases/latest) |
+| 自己编译 | 想改代码 | 见 [构建](#构建) |
+
+拿到 exe 后放进任意可写目录（桌面、D 盘文件夹都行），双击运行 —— 屏幕上方中间会出现 `180`。
+
+> 没有代码签名，第一次运行 SmartScreen 会拦一下：点 **更多信息 → 仍要运行**。详情见[分发给别人](#分发给别人)。
 
 ## 功能特性
 
@@ -41,7 +64,7 @@
 
 ## 快速开始
 
-1. 双击 `dist\MeditationTimer.exe`（或者把 exe 拷到任意可写目录再双击）。
+1. 双击 `MeditationTimer.exe`（放在桌面、D 盘文件夹等可写目录）。
 2. 屏幕上方中间出现 `180`；按 `F9` 开始 / 重新计时，或者右键出菜单点「重新计时」。
 3. 想要它不碍事：右键 →「背景透明度」→「全透明」，再 →「锁定（鼠标穿透）」。
 
@@ -98,7 +121,7 @@ build.bat
 test.bat
 ```
 
-编译并运行 `tests\SelfTest.cs`，覆盖 52 项逻辑：
+编译并运行 `tests\SelfTest.cs`，覆盖 52 项逻辑，每项打印 `ok` / `FAIL`：
 
 - 倒计时状态机：开始 / 暂停 / 继续 / 结束幂等 / 秒数文本 / 剩余比例
 - 两种时间格式：`Format`（秒数，向上取整）与 `FormatClock`（`MM:SS`）
@@ -150,7 +173,7 @@ test.bat
 
 | 项 | 要求 |
 |---|---|
-| 操作系统 | Windows 7 SP1 / 8.1 / 10 / 11 |
+| 操作系统 | Windows 7 SP1 / 8.1 / 10 / 11（不支持 macOS / Linux） |
 | 运行时 | .NET Framework 4.x（Win10 1903+、Win11 自带 4.8） |
 | 架构 | AnyCPU，32 位 / 64 位都能跑 |
 | 磁盘 | 一个 45 KB 的 exe；外加一个 200 字节左右的 `meditation.ini` |
@@ -170,6 +193,7 @@ test.bat
 - **倒计时**：用 `Stopwatch`（单调时钟）算剩余时间，不受系统时间调整影响；界面 200 ms 刷新一次。
 - **菜单配色**：`ToolStripProfessionalRenderer` 的子类挂在 `ToolStripManager.Renderer` 上，
   所以一级、二级菜单都是深底浅字（子菜单是独立窗口，默认会退回浅色渲染器）。
+- **零依赖**：没有网络请求、不碰注册表、不起服务；配置只是一个 ini 文件，删掉就复位。
 
 ## 目录结构
 
@@ -179,6 +203,7 @@ test.bat                  编译并运行逻辑自检
 run-as-admin.bat          以管理员身份启动（全局快捷键需要）
 meditation.example.ini    配置示例（逐项注释）
 README.md                 本文件
+LICENSE                   MIT 许可证
 docs/使用说明.md           面向使用者的完整手册
 assets/                   截图
 dist/                     编译产物 MeditationTimer.exe
@@ -209,17 +234,26 @@ tests/
 | 设置没保存 | exe 放在不可写目录了，挪到桌面或 D 盘 |
 | 首次运行被 SmartScreen 拦 | 「更多信息 → 仍要运行」 |
 | 杀软报可疑 | 未签名的小 exe + 注册全局热键 + 分层窗口容易进启发式规则，加信任即可 |
+| macOS / Linux 能用吗 | 不能。程序基于 WinForms + Win32 分层窗口，只支持 Windows |
 
 更多问题见 [docs/使用说明.md](docs/使用说明.md#10-常见问题)。
 
 ## 更新日志
 
-- **1.0.0** — 首版：无边框逐像素透明、剩余秒数 / 分:秒两种格式、背景贴合文字且其余鼠标穿透、
+- **1.0.0**（2026-10）— 首版：无边框逐像素透明、剩余秒数 / 分:秒两种格式、背景贴合文字且其余鼠标穿透、
   锁定（整窗穿透）、到点闪字提醒、托盘图标、全局快捷键、配置持久化。
+
+## 反馈与贡献
+
+- 遇到问题或有建议，欢迎开 [Issue](../../issues)。
+- 改代码前先跑 `test.bat`，保持 52 项自检全绿；改动界面的话请附一张截图。
+- 项目刻意保持「单 exe、零依赖、9 个源文件」，不接受引入第三方运行时、安装器或常驻服务的改动。
+
+## 许可
+
+以 [MIT 许可证](LICENSE) 发布，Copyright (c) 2026 mhwy。可以自由使用、修改、分发，保留版权声明即可。
 
 ## 相关
 
-- 同功能的 Qt / PySide6 版（无 .NET 依赖、20.7 MB）在 `mhxy` 仓库的 `mhxy_assistant` 里，配置键与这里一一对应。
-- 本项目暂未添加开源许可；如果要公开发布，建议先选一个（MIT / Apache-2.0 等）再加 `LICENSE`。
-
-
+- 同功能的 Qt / PySide6 版（无 .NET 依赖、20.7 MB）在本地 `mhxy` 项目的 `mhxy_assistant` 里，配置键与这里一一对应。
+- 同账号下的另一个梦幻西游辅助工具：[rust-mhxy](https://github.com/522247020/rust-mhxy)（抓鬼 / 鬼王任务坐标识别）。
